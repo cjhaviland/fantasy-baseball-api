@@ -6,20 +6,24 @@
 
 var app = require('../app');
 var debug = require('debug')('generic-express:server');
-var http = require('http');
+var https = require('https');
+
+// SSL Cert
+const key = fs.readFileSync("./cert/key.pem");
+const cert = fs.readFileSync("./cert/cert.pem");
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer({ key: key, cert: cert }, app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -87,4 +91,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }
