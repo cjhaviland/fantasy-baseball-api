@@ -7,6 +7,11 @@ const _yahooAppKey = process.env.YAHOO_APP_KEY;
 const _yahooAppSecret = process.env.YAHOO_APP_SECRET;
 const _yahooRedirectUri = process.env.YAHOO_REDIRECT_URI;
 
+const leagueKeys = {
+    2020: "398.l.28264",
+    2019: "388.l.111208",
+};
+
 // Token Callback
 router.tokenCallback = function ({ access_token, refresh_token }) {
   // console.log(`Access Token: ${access_token}`)
@@ -30,19 +35,15 @@ router.tokenCallback = function ({ access_token, refresh_token }) {
   });
 };
 
-// Setup 
+// Setup
 router.yf = new YahooFantasy(
-    _yahooAppKey,
-    _yahooAppSecret,
+  _yahooAppKey,
+  _yahooAppSecret,
   router.tokenCallback,
   _yahooRedirectUri
 );
 
 /* GET users listing. */
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
-});
-
 // Sends the Yahoo OAuth Redirect
 router.get("/auth", (req, res) => {
   router.yf.auth(res);
@@ -59,9 +60,20 @@ router.get("/auth/callback", (req, res) => {
       console.log(authObj);
     }
 
-    // console.log('auth/callback')
-    res.json({ authenticated: true });
+    res.redirect(`https://localhost:4200/yahoo`);
   });
+});
+
+router.get("/league/:year", async (req, res) => {
+    try {
+        let year = leagueKeys[`${req.params.year}`];
+
+        const meta = await router.yf.league.meta(year);
+
+        res.json(meta);
+    } catch (e) {
+        res.json({ msg: e })
+    }
 });
 
 module.exports = router;

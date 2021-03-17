@@ -1,6 +1,4 @@
 // Imports
-// require("@babel/register");
-// require("babel-polyfill");
 require("dotenv").config();
 
 const express = require("express"),
@@ -24,6 +22,10 @@ app.set("view engine", "jade");
 
 // App Middleware Setup
 app.use(cors());
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  next()
+})
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

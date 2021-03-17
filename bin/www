@@ -4,9 +4,10 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('generic-express:server');
-var https = require('https');
+const app = require('../app');
+const debug = require('debug')('generic-express:server');
+const https = require('https');
+const fs = require('fs')
 
 // SSL Cert
 const key = fs.readFileSync("./cert/key.pem");
